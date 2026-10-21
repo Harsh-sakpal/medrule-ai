@@ -11,9 +11,7 @@
 - **Department:** Department of Computer Engineering
 - **University:** Savitribai Phule Pune University (SPPU)
 - **Academic Year:** 2026–2027
-- **Candidate Name:** Harsh Rajendra Sakpal
-- **Roll Number:** 45
-- **Division:** TE-A COMP
+- **Division:** TE Computer Engineering
 - **Project Guide:** Prof. Ajit Patil
 - **Subject:** Artificial Intelligence (Mini-Project)
 
@@ -104,7 +102,7 @@ AI_miniproject/
 
 1. **Open Terminal in the Project Directory:**
    ```powershell
-   cd "C:\Users\Harsh Sakpal\Desktop\AI_miniproject"
+   cd AI_miniproject
    ```
 
 2. **Create a Virtual Environment (Recommended):**

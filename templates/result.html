@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Inference Results & Explanation | MedRule AI{% endblock %}
+{% block title %}Results | MedRule AI{% endblock %}
 
 {% block content %}
 <div class="container main-content-wrapper">
 
-    <!-- Emergency Red-Flag Warning Card (P0 Priority) -->
+    <!-- Emergency Alert -->
     {% if result.is_emergency %}
     <div class="emergency-alert-card">
         <div class="emergency-header">
             <div class="pulse-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
             <div>
                 <h1 class="emergency-title">{{ result.emergency_data.alert_title }}</h1>
-                <p class="emergency-subtitle">Critical symptoms detected requiring immediate professional medical attention.</p>
+                <p class="emergency-subtitle">Critical symptoms detected — seek immediate medical help.</p>
             </div>
         </div>
 
@@ -20,18 +20,16 @@
             <p class="emergency-message">{{ result.emergency_data.message }}</p>
 
             <div class="emergency-detected-list">
-                <h4><i class="fa-solid fa-bell"></i> Triggering Red-Flag Symptoms:</h4>
+                <h4><i class="fa-solid fa-bell"></i> Detected Red-Flag Symptoms:</h4>
                 <ul>
                     {% for item in result.emergency_data.detected %}
-                    <li>
-                        <strong>{{ item.name }}:</strong> {{ item.warning }}
-                    </li>
+                    <li><strong>{{ item.name }}:</strong> {{ item.warning }}</li>
                     {% endfor %}
                 </ul>
             </div>
 
             <div class="emergency-actions">
-                <h4><i class="fa-solid fa-truck-medical"></i> Immediate Action Protocol:</h4>
+                <h4><i class="fa-solid fa-truck-medical"></i> What To Do:</h4>
                 <ol>
                     {% for action in result.emergency_data.action_items %}
                     <li>{{ action }}</li>
@@ -42,7 +40,7 @@
 
         <div class="emergency-footer">
             <a href="{{ url_for('index') }}" class="btn btn-secondary-light">
-                <i class="fa-solid fa-arrow-left"></i> Return to Symptom Checker
+                <i class="fa-solid fa-arrow-left"></i> Back to Checker
             </a>
             <a href="tel:112" class="btn btn-danger-solid">
                 <i class="fa-solid fa-phone"></i> Emergency Call (112)
@@ -51,11 +49,10 @@
     </div>
 
     {% else %}
-    <!-- Ordinary Educational Inference Result Screen -->
 
     {% set inf = result.inference_data %}
 
-    <!-- Result Overview Header Card -->
+    <!-- Result Overview -->
     <div class="card result-hero-card">
         <div class="result-hero-top">
             <div class="mode-tag">
@@ -63,16 +60,16 @@
                 {{ inf.mode_label }}
             </div>
             <div class="facts-count-badge">
-                <i class="fa-solid fa-list-check"></i> {{ inf.facts_provided|length }} Input Facts Provided
+                <i class="fa-solid fa-list-check"></i> {{ inf.facts_provided|length }} symptoms analyzed
             </div>
         </div>
 
         <h1 class="result-title">{{ inf.conclusion_summary }}</h1>
         <p class="result-guidance">{{ inf.guidance if inf.mode == 'forward' else inf.explanation_narrative }}</p>
 
-        <!-- Input Facts Badges -->
+        <!-- Input Facts -->
         <div class="facts-tags-wrapper">
-            <span class="facts-label">Supplied Facts ($F$):</span>
+            <span class="facts-label">Your symptoms:</span>
             {% for s in inf.facts_provided %}
             <span class="badge fact-badge"><i class="fa-solid fa-circle-check"></i> {{ s }}</span>
             {% endfor %}
@@ -80,13 +77,12 @@
     </div>
 
     {% if inf.mode == 'forward' %}
-    <!-- Forward Chaining Results View -->
+    <!-- Forward Chaining Results -->
 
     {% if inf.matched_rules %}
-    <!-- Matched Rule Cards -->
     <div class="section-title-wrapper">
-        <h2 class="section-heading"><i class="fa-solid fa-circle-nodes"></i> Matched Production Rules (Fired Conclusions)</h2>
-        <p class="section-sub">The following rules had all necessary antecedent conditions satisfied by your input facts.</p>
+        <h2 class="section-heading"><i class="fa-solid fa-circle-nodes"></i> Matched Conditions</h2>
+        <p class="section-sub">These conditions matched your symptoms based on the rule base.</p>
     </div>
 
     <div class="matched-rules-grid">
@@ -97,18 +93,18 @@
                     <span class="rule-id-badge">{{ rule.rule_id }}</span>
                     <span class="rule-category-badge">{{ rule.category }}</span>
                 </div>
-                <span class="confidence-pill"><i class="fa-solid fa-check-double"></i> Rule Fired</span>
+                <span class="confidence-pill"><i class="fa-solid fa-check-double"></i> Matched</span>
             </div>
 
             <h3 class="rule-hypothesis-title">{{ rule.hypothesis }}</h3>
             
             <div class="rule-explanation-box">
                 <i class="fa-solid fa-lightbulb"></i>
-                <p><strong>Reasoning Explanation:</strong> {{ rule.explanation }}</p>
+                <p><strong>How it was detected:</strong> {{ rule.explanation }}</p>
             </div>
 
             <div class="rule-symptoms-section">
-                <span class="sub-label">Satisfied Antecedents:</span>
+                <span class="sub-label">Matching symptoms:</span>
                 <div class="badge-row">
                     {% for s in rule.matched_symptoms %}
                     <span class="badge badge-success"><i class="fa-solid fa-check"></i> {{ s }}</span>
@@ -118,34 +114,34 @@
 
             <div class="rule-recommendation-box">
                 <i class="fa-solid fa-info-circle"></i>
-                <p><strong>Educational Care Guidance:</strong> {{ rule.recommendation }}</p>
+                <p><strong>Guidance:</strong> {{ rule.recommendation }}</p>
             </div>
         </div>
         {% endfor %}
     </div>
 
     {% else %}
-    <!-- Uncertain Result Box -->
+    <!-- No Match -->
     <div class="card uncertain-card">
         <div class="uncertain-header">
             <i class="fa-solid fa-circle-question uncertain-icon"></i>
             <div>
-                <h3>Unmatched / Uncertain Symptom Pattern</h3>
-                <p>The provided facts do not satisfy the minimum antecedent conditions of any rule in the educational knowledge base.</p>
+                <h3>No Matching Pattern Found</h3>
+                <p>Your symptoms don't match any condition in the current knowledge base.</p>
             </div>
         </div>
         <p class="uncertain-body">
-            In rule-based expert systems, an uncertain outcome occurs when the input facts are incomplete, ambiguous, or belong to conditions outside the system's current ruleset. This reinforces why automated educational tools must not replace comprehensive clinical evaluation.
+            This can happen when symptoms are incomplete or fall outside the system's rule set. Always consult a healthcare professional for proper evaluation.
         </p>
     </div>
     {% endif %}
 
-    <!-- Step-by-Step Forward Chaining Trace Table -->
+    <!-- Reasoning Trace -->
     <div class="card trace-card">
         <div class="card-header">
             <div>
-                <h3 class="card-title"><i class="fa-solid fa-timeline"></i> Step-by-Step Rule Evaluation Trace</h3>
-                <p class="card-subtitle">Complete transparent audit log showing how the inference engine examined each rule in the knowledge base.</p>
+                <h3 class="card-title"><i class="fa-solid fa-timeline"></i> Reasoning Trace</h3>
+                <p class="card-subtitle">Step-by-step log showing how each rule was evaluated.</p>
             </div>
         </div>
 
@@ -154,11 +150,11 @@
                 <thead>
                     <tr>
                         <th>Step</th>
-                        <th>Rule ID</th>
-                        <th>Hypothesis Target</th>
-                        <th>Satisfied Conditions</th>
-                        <th>Missing Conditions</th>
-                        <th>Rule Status</th>
+                        <th>Rule</th>
+                        <th>Condition</th>
+                        <th>Matched</th>
+                        <th>Missing</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,16 +178,16 @@
                                 <span class="badge badge-sm badge-neutral">{{ cond }}</span>
                                 {% endfor %}
                             {% else %}
-                                <span class="badge badge-sm badge-success">0 missing</span>
+                                <span class="badge badge-sm badge-success">All met</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if step.status == 'FIRED' %}
-                            <span class="status-badge status-fired"><i class="fa-solid fa-check-circle"></i> FIRED</span>
+                            <span class="status-badge status-fired"><i class="fa-solid fa-check-circle"></i> Fired</span>
                             {% elif step.status == 'PARTIAL_MATCH' %}
                             <span class="status-badge status-partial"><i class="fa-solid fa-clock"></i> Partial ({{ step.satisfied_count }}/{{ step.total_conditions }})</span>
                             {% else %}
-                            <span class="status-badge status-none"><i class="fa-solid fa-circle-xmark"></i> Not Matched</span>
+                            <span class="status-badge status-none"><i class="fa-solid fa-circle-xmark"></i> No Match</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -202,10 +198,10 @@
     </div>
 
     {% else %}
-    <!-- Backward Chaining Results View -->
+    <!-- Backward Chaining Results -->
     <div class="card backward-result-card">
         <div class="backward-header">
-            <div class="target-badge">Goal Target</div>
+            <div class="target-badge">Target Condition</div>
             <h2 class="target-name">{{ inf.target_hypothesis }}</h2>
             <p class="target-desc">{{ inf.target_description }}</p>
         </div>
@@ -215,40 +211,40 @@
                 <i class="fa-solid {% if inf.is_goal_satisfied %}fa-circle-check{% else %}fa-circle-xmark{% endif %}"></i>
             </div>
             <div>
-                <h3>Goal Status: {{ "GOAL SATISFIED" if inf.is_goal_satisfied else "GOAL NOT SATISFIED" }}</h3>
+                <h3>{{ "GOAL SATISFIED — Condition Supported ✓" if inf.is_goal_satisfied else "GOAL NOT SATISFIED — Condition Not Supported" }}</h3>
                 <p>{{ inf.explanation_narrative }}</p>
             </div>
         </div>
 
-        <!-- Rule Proof Breakdown -->
+        <!-- Condition Checklist -->
         <div class="rule-evaluations-list">
-            <h4><i class="fa-solid fa-clipboard-list"></i> Prerequisite Condition Checklist:</h4>
+            <h4><i class="fa-solid fa-clipboard-list"></i> Required Symptoms Checklist:</h4>
             {% for rule in inf.rule_evaluations %}
             <div class="evaluation-item">
                 <div class="eval-header">
-                    <strong>Rule {{ rule.rule_id }}:</strong> IF (all antecedents present) &rarr; THEN {{ rule.conclusion }}
+                    <strong>Rule {{ rule.rule_id }}:</strong> {{ rule.conclusion }}
                 </div>
                 
                 <div class="condition-columns">
                     <div class="cond-col">
-                        <span class="col-title text-success"><i class="fa-solid fa-check"></i> Satisfied Conditions:</span>
+                        <span class="col-title text-success"><i class="fa-solid fa-check"></i> Present:</span>
                         {% if rule.satisfied_conditions %}
                             {% for c in rule.satisfied_conditions %}
                             <span class="badge badge-success">{{ c }}</span>
                             {% endfor %}
                         {% else %}
-                            <span class="text-muted">No conditions satisfied</span>
+                            <span class="text-muted">None present</span>
                         {% endif %}
                     </div>
 
                     <div class="cond-col">
-                        <span class="col-title text-danger"><i class="fa-solid fa-xmark"></i> Missing Conditions:</span>
+                        <span class="col-title text-danger"><i class="fa-solid fa-xmark"></i> Missing:</span>
                         {% if rule.missing_conditions %}
                             {% for c in rule.missing_conditions %}
                             <span class="badge badge-danger-soft">{{ c }}</span>
                             {% endfor %}
                         {% else %}
-                            <span class="badge badge-success">All conditions met</span>
+                            <span class="badge badge-success">All symptoms present</span>
                         {% endif %}
                     </div>
                 </div>
@@ -256,7 +252,7 @@
                 {% if rule.is_satisfied %}
                 <div class="rule-recommendation-box mt-3">
                     <i class="fa-solid fa-info-circle"></i>
-                    <p><strong>Educational Care Guidance:</strong> {{ rule.recommendation }}</p>
+                    <p><strong>Guidance:</strong> {{ rule.recommendation }}</p>
                 </div>
                 {% endif %}
             </div>
@@ -265,28 +261,28 @@
     </div>
     {% endif %}
 
-    <!-- Formal Academic Disclaimer Card -->
+    <!-- Disclaimer -->
     <div class="card disclaimer-card">
         <div class="disclaimer-icon"><i class="fa-solid fa-user-doctor"></i></div>
         <div>
-            <h4>Educational Prototype & Ethical Healthcare Disclaimer</h4>
+            <h4>Educational Disclaimer</h4>
             <p>
                 {{ result.disclaimer }}
-                The IF-THEN production rules demonstrated in this system are illustrative constructs for demonstrating computer science AI concepts. Real-world medical diagnosis requires physical examination, pathological testing, differential medical history, and clinical diagnosis by licensed medical practitioners.
+                This system uses IF-THEN rules for educational demonstration only. Real medical diagnosis requires professional clinical evaluation by licensed practitioners.
             </p>
         </div>
     </div>
 
-    <!-- Navigation Action Row -->
+    <!-- Actions -->
     <div class="result-action-row">
         <a href="{{ url_for('index') }}" class="btn btn-primary">
-            <i class="fa-solid fa-arrow-rotate-left"></i> Run Another Diagnosis
+            <i class="fa-solid fa-arrow-rotate-left"></i> New Analysis
         </a>
         <a href="{{ url_for('history') }}" class="btn btn-outline">
-            <i class="fa-solid fa-clock-rotate-left"></i> View Audit History
+            <i class="fa-solid fa-clock-rotate-left"></i> View History
         </a>
         <a href="{{ url_for('test_runner') }}" class="btn btn-ghost">
-            <i class="fa-solid fa-vial"></i> Open Test Suite
+            <i class="fa-solid fa-vial"></i> Test Suite
         </a>
     </div>
 

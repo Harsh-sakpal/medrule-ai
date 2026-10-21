@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}Symptom Checker | MedRule AI - Rule-Based Expert System{% endblock %}
+{% block title %}Symptom Checker | MedRule AI{% endblock %}
 
 {% block content %}
 <div class="container main-content-wrapper">
-    <!-- Hero / Intro Section -->
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-badge">
-            <i class="fa-solid fa-microchip"></i> Expert System Inference Engine
+            <i class="fa-solid fa-microchip"></i> AI Expert System
         </div>
-        <h1 class="hero-title">Rule-Based Medical Diagnosis System</h1>
+        <h1 class="hero-title">Medical Symptom Checker</h1>
         <p class="hero-subtitle">
-            Demonstrating structured knowledge representation and logical reasoning through <strong>Forward Chaining</strong> (data-driven) and <strong>Backward Chaining</strong> (goal-driven) inference.
+            <strong>Rule-Based Medical Diagnosis System:</strong> Select your symptoms below and our inference engine will analyze them using <strong>Forward Chaining</strong> or <strong>Backward Chaining</strong> reasoning.
         </p>
     </section>
 
-    <!-- Error Alert if any -->
+    <!-- Error Alert -->
     {% if error_message %}
     <div class="alert-box alert-error">
         <i class="fa-solid fa-circle-exclamation alert-icon"></i>
         <div class="alert-text">
-            <strong>Input Validation Error:</strong> {{ error_message }}
+            <strong>Validation Error:</strong> {{ error_message }}
         </div>
     </div>
     {% endif %}
 
-    <!-- Main Diagnostic Form -->
+    <!-- Main Form -->
     <form action="{{ url_for('analyze') }}" method="POST" id="diagnosisForm" class="diagnosis-form">
         
-        <!-- Step 1: Select Inference Method -->
+        <!-- Step 1: Inference Method -->
         <div class="card form-card">
             <div class="card-header">
                 <div class="step-indicator">Step 1</div>
                 <div>
-                    <h2 class="card-title">Select Inference Reasoning Method</h2>
-                    <p class="card-subtitle">Choose the direction of logical inference across the knowledge base.</p>
+                    <h2 class="card-title">Choose Reasoning Method</h2>
+                    <p class="card-subtitle">Pick how the system should analyze your symptoms.</p>
                 </div>
             </div>
 
@@ -44,8 +44,8 @@
                     <div class="radio-card-content">
                         <div class="radio-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
                         <div class="radio-details">
-                            <span class="radio-title">Forward Chaining (Data-Driven)</span>
-                            <span class="radio-desc">Starts with user-observed facts (symptoms) and matches production rules to deduce conclusions.</span>
+                            <span class="radio-title">Forward Chaining</span>
+                            <span class="radio-desc">Start from your symptoms and find matching conditions. Best for general screening.</span>
                         </div>
                     </div>
                 </label>
@@ -55,36 +55,35 @@
                     <div class="radio-card-content">
                         <div class="radio-icon"><i class="fa-solid fa-bullseye"></i></div>
                         <div class="radio-details">
-                            <span class="radio-title">Backward Chaining (Goal-Driven)</span>
-                            <span class="radio-desc">Starts with a chosen target hypothesis and validates whether current facts satisfy its prerequisites.</span>
+                            <span class="radio-title">Backward Chaining</span>
+                            <span class="radio-desc">Pick a suspected condition and verify if your symptoms support it.</span>
                         </div>
                     </div>
                 </label>
             </div>
 
-            <!-- Target Goal Selection (Dynamically revealed when Backward Chaining is active) -->
+            <!-- Target Goal (Backward mode) -->
             <div id="targetGoalWrapper" class="target-goal-container" style="display: none;">
                 <label for="target_goal" class="form-label">
-                    <i class="fa-solid fa-crosshairs"></i> Target Hypothesis to Verify:
+                    <i class="fa-solid fa-crosshairs"></i> Condition to Verify:
                 </label>
                 <select name="target_goal" id="target_goal" class="form-select">
                     {% for h in hypotheses %}
-                    <option value="{{ h.id }}">{{ h.name }} — {{ h.description }}</option>
+                    <option value="{{ h.id }}">{{ h.name }}</option>
                     {% endfor %}
                 </select>
-                <small class="helper-text">The inference engine will trace backward from this hypothesis to examine required conditions.</small>
+                <small class="helper-text">The engine will check if your selected symptoms support this condition.</small>
             </div>
         </div>
 
-        <!-- Step 2: Symptom Selection Interface -->
+        <!-- Step 2: Symptom Selection -->
         <div class="card form-card">
             <div class="card-header flex-header">
                 <div>
                     <div class="step-indicator">Step 2</div>
-                    <h2 class="card-title">Select Observed Symptoms (Known Facts)</h2>
-                    <p class="card-subtitle">Check all symptoms currently observed. These form the Initial Working Memory Facts ($F$).</p>
+                    <h2 class="card-title">Select Your Symptoms</h2>
+                    <p class="card-subtitle">Check all symptoms you're currently experiencing.</p>
                 </div>
-                <!-- Quick Demo Presets for Viva / Faculty Evaluation -->
                 <div class="preset-dropdown-wrapper">
                     <span class="preset-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Quick Presets:</span>
                     <button type="button" class="btn btn-sm btn-outline" onclick="loadPreset('cold')">Cold</button>
@@ -96,12 +95,12 @@
                 </div>
             </div>
 
-            <!-- Categorized Symptoms Grid -->
+            <!-- Symptom Grid -->
             <div class="symptom-categories">
                 
-                <!-- Category: Respiratory -->
+                <!-- Respiratory -->
                 <div class="category-block">
-                    <h3 class="category-heading"><i class="fa-solid fa-lungs"></i> Respiratory Symptoms</h3>
+                    <h3 class="category-heading"><i class="fa-solid fa-lungs"></i> Respiratory</h3>
                     <div class="checkbox-grid">
                         {% for s in catalog.respiratory %}
                         <label class="symptom-card">
@@ -115,9 +114,9 @@
                     </div>
                 </div>
 
-                <!-- Category: General & Systemic -->
+                <!-- General & Systemic -->
                 <div class="category-block">
-                    <h3 class="category-heading"><i class="fa-solid fa-temperature-arrow-up"></i> General & Systemic Symptoms</h3>
+                    <h3 class="category-heading"><i class="fa-solid fa-temperature-arrow-up"></i> General & Systemic</h3>
                     <div class="checkbox-grid">
                         {% for s in catalog.general %}
                         <label class="symptom-card">
@@ -131,7 +130,7 @@
                     </div>
                 </div>
 
-                <!-- Category: Head, Eyes & Face -->
+                <!-- Head & Eyes -->
                 <div class="category-block">
                     <h3 class="category-heading"><i class="fa-solid fa-eye"></i> Head, Eyes & ENT</h3>
                     <div class="checkbox-grid">
@@ -147,9 +146,9 @@
                     </div>
                 </div>
 
-                <!-- Category: Digestive -->
+                <!-- Digestive -->
                 <div class="category-block">
-                    <h3 class="category-heading"><i class="fa-solid fa-utensils"></i> Gastrointestinal Symptoms</h3>
+                    <h3 class="category-heading"><i class="fa-solid fa-utensils"></i> Gastrointestinal</h3>
                     <div class="checkbox-grid">
                         {% for s in catalog.digestive %}
                         <label class="symptom-card">
@@ -163,13 +162,13 @@
                     </div>
                 </div>
 
-                <!-- Category: Emergency Symptoms (Priority Red-Flag) -->
+                <!-- Emergency -->
                 <div class="category-block category-emergency">
                     <div class="emergency-badge">
-                        <i class="fa-solid fa-triangle-exclamation"></i> High Priority Red Flags
+                        <i class="fa-solid fa-triangle-exclamation"></i> Critical
                     </div>
-                    <h3 class="category-heading text-danger"><i class="fa-solid fa-kit-medical"></i> Emergency & Critical Warning Symptoms</h3>
-                    <p class="category-sub text-danger-sub">Selecting any of these will trigger immediate emergency safety protocols.</p>
+                    <h3 class="category-heading text-danger"><i class="fa-solid fa-kit-medical"></i> Emergency Symptoms</h3>
+                    <p class="category-sub text-danger-sub">Selecting any of these triggers an immediate safety alert.</p>
                     <div class="checkbox-grid">
                         {% for s in catalog.emergency %}
                         <label class="symptom-card card-emergency">
@@ -186,7 +185,7 @@
             </div>
         </div>
 
-        <!-- Submit Action Bar -->
+        <!-- Submit Bar -->
         <div class="form-action-bar">
             <div class="selection-counter" id="selectionCounter">
                 <i class="fa-solid fa-clipboard-check"></i> <span id="selectedCountText">0</span> symptoms selected

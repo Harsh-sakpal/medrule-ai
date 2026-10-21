@@ -3,7 +3,7 @@ MedRule AI - Web Application
 Rule-Based Medical Diagnosis Educational Expert System
 SPPU TE Computer Engineering - NEP 2024 Pattern
 
-Student: Harsh Rajendra Sakpal (Roll No. 45, Div TE-A COMP)
+Department of Computer Engineering
 College: Bharati Vidyapeeth's College of Engineering, Lavale, Pune
 Guide: Prof. Ajit Patil
 Academic Year: 2026-27
@@ -33,7 +33,7 @@ app = Flask(
     template_folder=os.path.join(BASE_DIR, "templates")
 )
 # Secret key for secure session state management
-app.secret_key = os.environ.get("SECRET_KEY", "medrule-ai-sppu-2026-harsh-sakpal-secret-key")
+app.secret_key = os.environ.get("SECRET_KEY", "medrule-ai-sppu-2026-secret-key")
 
 from flask import send_from_directory
 
@@ -46,9 +46,7 @@ def custom_static(filename):
 PROJECT_METADATA = {
     "title": "AI-Based Medical Diagnosis System Using a Rule-Based Expert System",
     "short_name": "MedRule AI",
-    "student": "Harsh Rajendra Sakpal",
-    "roll_no": "45",
-    "division": "TE-A COMP",
+    "division": "TE Computer Engineering",
     "academic_year": "2026-27",
     "semester": "Semester V",
     "college": "Bharati Vidyapeeth's College of Engineering, Lavale, Pune",

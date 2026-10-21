@@ -74,7 +74,7 @@ class TestFlaskRoutes(unittest.TestCase):
         response = self.client.get("/about")
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"System Architecture", response.data)
-        self.assertIn(b"Harsh Rajendra Sakpal", response.data)
+        self.assertIn(b"Bharati Vidyapeeth", response.data)
 
     def test_test_runner_page(self):
         """Test GET /tests runs unit test suite in browser."""
