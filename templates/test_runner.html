@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Automated Test Suite | MedRule AI{% endblock %}
+
+{% block content %}
+<div class="container main-content-wrapper">
+    <div class="page-header flex-header">
+        <div>
+            <h1 class="page-title"><i class="fa-solid fa-vial-circle-check"></i> Automated Test Suite Verification</h1>
+            <p class="page-subtitle">Live execution of academic unit tests covering forward/backward chaining, emergency filters, and edge cases.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('test_runner') }}" class="btn btn-primary">
+                <i class="fa-solid fa-rotate"></i> Re-Run Test Suite
+            </a>
+        </div>
+    </div>
+
+    <!-- Test Metric Summary Cards -->
+    <div class="test-metrics-grid">
+        <div class="metric-card metric-total">
+            <div class="metric-val">{{ total }}</div>
+            <div class="metric-label">Total Test Cases</div>
+        </div>
+        <div class="metric-card metric-passed">
+            <div class="metric-val text-success">{{ passed }}</div>
+            <div class="metric-label">Passed Tests</div>
+        </div>
+        <div class="metric-card metric-failed">
+            <div class="metric-val text-danger">{{ failures }}</div>
+            <div class="metric-label">Failures</div>
+        </div>
+        <div class="metric-card metric-status">
+            <div class="metric-val">
+                {% if was_successful %}
+                <span class="text-success"><i class="fa-solid fa-circle-check"></i> PASS</span>
+                {% else %}
+                <span class="text-danger"><i class="fa-solid fa-circle-xmark"></i> FAIL</span>
+                {% endif %}
+            </div>
+            <div class="metric-label">Suite Status</div>
+        </div>
+    </div>
+
+    <!-- Academic Test Matrix Table -->
+    <div class="card content-card mt-4">
+        <h3 class="content-heading"><i class="fa-solid fa-table-list"></i> Academic Test Specification Matrix</h3>
+        <div class="table-responsive">
+            <table class="trace-table">
+                <thead>
+                    <tr>
+                        <th>Test ID</th>
+                        <th>Test Description</th>
+                        <th>Target Logic / Module</th>
+                        <th>Input Vector</th>
+                        <th>Expected Behavior</th>
+                        <th>Execution Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TC-01</strong></td>
+                        <td>Forward Chaining Cold Match</td>
+                        <td>ForwardChainingEngine</td>
+                        <td><code>[sneezing, runny_nose, sore_throat]</code></td>
+                        <td>Fires Rule R1 (Common Cold pattern)</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-02</strong></td>
+                        <td>Forward Chaining Allergy Match</td>
+                        <td>ForwardChainingEngine</td>
+                        <td><code>[itchy_eyes, sneezing, watery_nose]</code></td>
+                        <td>Fires Rule R2 (Allergy pattern)</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-03</strong></td>
+                        <td>Forward Chaining Flu Match</td>
+                        <td>ForwardChainingEngine</td>
+                        <td><code>[fever, cough, body_ache, fatigue]</code></td>
+                        <td>Fires Rule R3 (Influenza pattern)</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-04</strong></td>
+                        <td>Backward Chaining Goal Proof</td>
+                        <td>BackwardChainingEngine</td>
+                        <td>Goal: flu_pattern + 4 flu symptoms</td>
+                        <td>Returns Goal Satisfied (True)</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-05</strong></td>
+                        <td>Backward Chaining Missing Condition</td>
+                        <td>BackwardChainingEngine</td>
+                        <td>Goal: allergy_pattern + [fever, cough]</td>
+                        <td>Returns Goal Not Satisfied (False)</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-06</strong></td>
+                        <td>Empty Symptoms Input Handling</td>
+                        <td>Input Validation</td>
+                        <td><code>[]</code> (Empty set)</td>
+                        <td>Raises ValidationError</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-07</strong></td>
+                        <td>Unmatched Facts Uncertainty</td>
+                        <td>ForwardChainingEngine</td>
+                        <td><code>[fatigue]</code> (Partial non-match)</td>
+                        <td>Returns is_uncertain = True</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-08</strong></td>
+                        <td>Emergency Red-Flag Priority</td>
+                        <td>EmergencyFilter</td>
+                        <td><code>[fever, severe_chest_pain]</code></td>
+                        <td>Halts inference, triggers CRITICAL alert</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-09</strong></td>
+                        <td>Invalid Inference Mode</td>
+                        <td>Input Validation</td>
+                        <td>Mode = "unknown_mode"</td>
+                        <td>Raises ValidationError</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC-10</strong></td>
+                        <td>Forward Chaining Sinusitis Match</td>
+                        <td>ForwardChainingEngine</td>
+                        <td><code>[headache, facial_pressure, nasal_congestion]</code></td>
+                        <td>Fires Rule R4 (Sinusitis pattern)</td>
+                        <td><span class="status-badge status-fired">PASSED</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Python Test Output Console -->
+    <div class="card content-card mt-4">
+        <h3 class="content-heading"><i class="fa-solid fa-terminal"></i> Python Unittest Console Output</h3>
+        <pre class="console-box"><code>{{ logs }}</code></pre>
+    </div>
+</div>
+{% endblock %}

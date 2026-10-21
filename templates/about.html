@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}System Architecture & AI Theory | MedRule AI{% endblock %}
+
+{% block content %}
+<div class="container main-content-wrapper">
+    <div class="page-header">
+        <h1 class="page-title"><i class="fa-solid fa-circle-nodes"></i> System Architecture & AI Theory</h1>
+        <p class="page-subtitle">Detailed documentation of system design, mathematical formalization, and inference algorithms.</p>
+    </div>
+
+    <!-- Academic Metadata Card -->
+    <div class="card meta-banner-card">
+        <div class="meta-grid">
+            <div>
+                <span class="meta-label">Project Title:</span>
+                <strong class="meta-val">{{ meta.title }}</strong>
+            </div>
+            <div>
+                <span class="meta-label">Student Name:</span>
+                <strong class="meta-val">{{ meta.student }} (Roll: {{ meta.roll_no }}, {{ meta.division }})</strong>
+            </div>
+            <div>
+                <span class="meta-label">Institution:</span>
+                <strong class="meta-val">{{ meta.college }}</strong>
+            </div>
+            <div>
+                <span class="meta-label">Affiliation & Guide:</span>
+                <strong class="meta-val">{{ meta.university }} &bull; Guide: {{ meta.guide }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. System Architecture & Block Diagram -->
+    <div class="card content-card">
+        <h2 class="content-heading"><i class="fa-solid fa-layer-group"></i> 1. System Architecture (Three-Layer Design)</h2>
+        <p>
+            MedRule AI is engineered following an extensible <strong>Three-Tier Architecture</strong> that decouples the user interaction interface, the inference evaluation pipeline, and domain knowledge definitions.
+        </p>
+
+        <div class="architecture-visual-grid">
+            <div class="arch-tier-card">
+                <div class="arch-tier-num">Tier 1</div>
+                <h4>Presentation Layer</h4>
+                <p>Responsive Web Client developed using HTML5, modern CSS3 with glassmorphic tokens, and Vanilla JavaScript. Provides symptom checkbox grids, inference toggles, and live audit views.</p>
+            </div>
+            <div class="arch-tier-card">
+                <div class="arch-tier-num">Tier 2</div>
+                <h4>Application / Inference Layer</h4>
+                <p>Python Flask controller executing the <code>EmergencyFilter</code>, <code>ForwardChainingEngine</code>, and <code>BackwardChainingEngine</code>. Generates transparent step-by-step reasoning traces.</p>
+            </div>
+            <div class="arch-tier-card">
+                <div class="arch-tier-num">Tier 3</div>
+                <h4>Knowledge Layer</h4>
+                <p>Structured declarative production rules ($R_1 \dots R_6$), emergency indicators, and hypothesis definitions represented in Python dictionaries and JSON schema.</p>
+            </div>
+        </div>
+
+        <div class="arch-flow-diagram">
+            <div class="diagram-step">
+                <i class="fa-solid fa-user"></i>
+                <span>User Input</span>
+            </div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-step">
+                <i class="fa-solid fa-shield-virus"></i>
+                <span>Validation & Emergency Filter</span>
+            </div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-step highlight">
+                <i class="fa-solid fa-brain"></i>
+                <span>Inference Engine (Forward / Backward)</span>
+            </div>
+            <div class="diagram-arrow">&harr;</div>
+            <div class="diagram-step">
+                <i class="fa-solid fa-database"></i>
+                <span>Knowledge Base (IF-THEN Rules)</span>
+            </div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-step">
+                <i class="fa-solid fa-square-poll-vertical"></i>
+                <span>Explainable Trace & Output</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Mathematical Formalization -->
+    <div class="card content-card">
+        <h2 class="content-heading"><i class="fa-solid fa-square-root-variable"></i> 2. Mathematical Formalization of the Expert System</h2>
+        <p>The expert system is formalized as a discrete tuple $\mathcal{ES} = \langle \mathcal{S}, \mathcal{F}, \mathcal{H}, \mathcal{R}, \mathcal{M} \rangle$:</p>
+        
+        <ul class="math-spec-list">
+            <li>
+                <strong>Symptom Universe ($\mathcal{S}$):</strong> 
+                The finite set of all detectable observable symptoms:
+                <br>
+                <code>&S; = {sneezing, runny_nose, cough, fever, fatigue, body_ache, itchy_eyes, watery_nose, headache, facial_pressure, ...}</code>
+            </li>
+            <li>
+                <strong>Working Memory Facts ($\mathcal{F}$):</strong> 
+                A subset of active observations asserted by the user: $\mathcal{F} \subseteq \mathcal{S}$.
+            </li>
+            <li>
+                <strong>Hypotheses Universe ($\mathcal{H}$):</strong> 
+                The set of candidate disease symptom profiles:
+                <br>
+                <code>&H; = {common_cold, allergy_rhinitis, influenza_like, sinusitis, gastroenteritis, migraine}</code>
+            </li>
+            <li>
+                <strong>Production Rules ($\mathcal{R}$):</strong> 
+                A set of IF-THEN implication relations. A rule $R_i \in \mathcal{R}$ is defined as:
+                <br>
+                $$R_i: \bigwedge_{s \in \text{Antecedents}(R_i)} s \implies \text{Consequent}(R_i)$$
+            </li>
+            <li>
+                <strong>Rule Satisfaction Predicate ($\mathcal{M}$):</strong>
+                For Forward Chaining, a rule $R_i$ fires if and only if its required condition threshold is met:
+                <br>
+                $$\text{Fires}(R_i, \mathcal{F}) \iff |\text{Antecedents}(R_i) \cap \mathcal{F}| \ge \tau_i$$
+            </li>
+        </ul>
+    </div>
+
+    <!-- 3. Forward vs Backward Chaining Comparison -->
+    <div class="card content-card">
+        <h2 class="content-heading"><i class="fa-solid fa-code-compare"></i> 3. Inference Paradigm Comparison</h2>
+        
+        <div class="table-responsive">
+            <table class="trace-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Forward Chaining (Data-Driven)</th>
+                        <th>Backward Chaining (Goal-Driven)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Starting Point</strong></td>
+                        <td>Initial known facts (user symptoms)</td>
+                        <td>Target hypothesis / clinical goal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Direction of Search</strong></td>
+                        <td>Bottom-Up (Antecedents $\to$ Consequents)</td>
+                        <td>Top-Down (Consequent $\to$ Antecedents)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ideal Use Case</strong></td>
+                        <td>Exploratory symptom analysis when user is unsure</td>
+                        <td>Verifying a suspected specific illness condition</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Search Strategy</strong></td>
+                        <td>Exhaustive breadth-oriented rule evaluation</td>
+                        <td>Depth-first verification of goal prerequisites</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time Complexity</strong></td>
+                        <td>$O(|\mathcal{R}| \cdot \max |\text{Antecedents}|)$</td>
+                        <td>$O(|\mathcal{R}_{goal}| \cdot |\text{Antecedents}|)$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. Production Rule Catalog -->
+    <div class="card content-card">
+        <h2 class="content-heading"><i class="fa-solid fa-book-medical"></i> 4. Active Educational Rule Base</h2>
+        <div class="rules-table-wrapper">
+            <table class="trace-table">
+                <thead>
+                    <tr>
+                        <th>Rule ID</th>
+                        <th>Category</th>
+                        <th>IF (Antecedent Conditions)</th>
+                        <th>THEN (Derived Conclusion)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rules %}
+                    <tr>
+                        <td><span class="rule-badge-sm">{{ r.id }}</span></td>
+                        <td>{{ r.category }}</td>
+                        <td>
+                            {% for a in r.antecedents %}
+                            <span class="badge badge-sm badge-neutral">{{ a }}</span>
+                            {% endfor %}
+                        </td>
+                        <td><strong>{{ r.conclusion }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

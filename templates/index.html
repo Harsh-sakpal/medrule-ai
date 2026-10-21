@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Symptom Checker | MedRule AI - Rule-Based Expert System{% endblock %}
+
+{% block content %}
+<div class="container main-content-wrapper">
+    <!-- Hero / Intro Section -->
+    <section class="hero-section">
+        <div class="hero-badge">
+            <i class="fa-solid fa-microchip"></i> Expert System Inference Engine
+        </div>
+        <h1 class="hero-title">Rule-Based Medical Diagnosis System</h1>
+        <p class="hero-subtitle">
+            Demonstrating structured knowledge representation and logical reasoning through <strong>Forward Chaining</strong> (data-driven) and <strong>Backward Chaining</strong> (goal-driven) inference.
+        </p>
+    </section>
+
+    <!-- Error Alert if any -->
+    {% if error_message %}
+    <div class="alert-box alert-error">
+        <i class="fa-solid fa-circle-exclamation alert-icon"></i>
+        <div class="alert-text">
+            <strong>Input Validation Error:</strong> {{ error_message }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Diagnostic Form -->
+    <form action="{{ url_for('analyze') }}" method="POST" id="diagnosisForm" class="diagnosis-form">
+        
+        <!-- Step 1: Select Inference Method -->
+        <div class="card form-card">
+            <div class="card-header">
+                <div class="step-indicator">Step 1</div>
+                <div>
+                    <h2 class="card-title">Select Inference Reasoning Method</h2>
+                    <p class="card-subtitle">Choose the direction of logical inference across the knowledge base.</p>
+                </div>
+            </div>
+
+            <div class="inference-options-grid">
+                <label class="radio-card active" id="forwardCard">
+                    <input type="radio" name="inference_mode" value="forward" checked onchange="toggleInferenceMode('forward')">
+                    <div class="radio-card-content">
+                        <div class="radio-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                        <div class="radio-details">
+                            <span class="radio-title">Forward Chaining (Data-Driven)</span>
+                            <span class="radio-desc">Starts with user-observed facts (symptoms) and matches production rules to deduce conclusions.</span>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="radio-card" id="backwardCard">
+                    <input type="radio" name="inference_mode" value="backward" onchange="toggleInferenceMode('backward')">
+                    <div class="radio-card-content">
+                        <div class="radio-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="radio-details">
+                            <span class="radio-title">Backward Chaining (Goal-Driven)</span>
+                            <span class="radio-desc">Starts with a chosen target hypothesis and validates whether current facts satisfy its prerequisites.</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Target Goal Selection (Dynamically revealed when Backward Chaining is active) -->
+            <div id="targetGoalWrapper" class="target-goal-container" style="display: none;">
+                <label for="target_goal" class="form-label">
+                    <i class="fa-solid fa-crosshairs"></i> Target Hypothesis to Verify:
+                </label>
+                <select name="target_goal" id="target_goal" class="form-select">
+                    {% for h in hypotheses %}
+                    <option value="{{ h.id }}">{{ h.name }} — {{ h.description }}</option>
+                    {% endfor %}
+                </select>
+                <small class="helper-text">The inference engine will trace backward from this hypothesis to examine required conditions.</small>
+            </div>
+        </div>
+
+        <!-- Step 2: Symptom Selection Interface -->
+        <div class="card form-card">
+            <div class="card-header flex-header">
+                <div>
+                    <div class="step-indicator">Step 2</div>
+                    <h2 class="card-title">Select Observed Symptoms (Known Facts)</h2>
+                    <p class="card-subtitle">Check all symptoms currently observed. These form the Initial Working Memory Facts ($F$).</p>
+                </div>
+                <!-- Quick Demo Presets for Viva / Faculty Evaluation -->
+                <div class="preset-dropdown-wrapper">
+                    <span class="preset-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Quick Presets:</span>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="loadPreset('cold')">Cold</button>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="loadPreset('flu')">Flu</button>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="loadPreset('allergy')">Allergy</button>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="loadPreset('sinus')">Sinus</button>
+                    <button type="button" class="btn btn-sm btn-danger-outline" onclick="loadPreset('emergency')">Emergency</button>
+                    <button type="button" class="btn btn-sm btn-ghost" onclick="clearAllSymptoms()">Clear</button>
+                </div>
+            </div>
+
+            <!-- Categorized Symptoms Grid -->
+            <div class="symptom-categories">
+                
+                <!-- Category: Respiratory -->
+                <div class="category-block">
+                    <h3 class="category-heading"><i class="fa-solid fa-lungs"></i> Respiratory Symptoms</h3>
+                    <div class="checkbox-grid">
+                        {% for s in catalog.respiratory %}
+                        <label class="symptom-card">
+                            <input type="checkbox" name="symptoms" value="{{ s.id }}" class="symptom-checkbox" id="chk_{{ s.id }}">
+                            <div class="checkbox-content">
+                                <span class="symptom-name">{{ s.name }}</span>
+                                <span class="symptom-desc">{{ s.description }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Category: General & Systemic -->
+                <div class="category-block">
+                    <h3 class="category-heading"><i class="fa-solid fa-temperature-arrow-up"></i> General & Systemic Symptoms</h3>
+                    <div class="checkbox-grid">
+                        {% for s in catalog.general %}
+                        <label class="symptom-card">
+                            <input type="checkbox" name="symptoms" value="{{ s.id }}" class="symptom-checkbox" id="chk_{{ s.id }}">
+                            <div class="checkbox-content">
+                                <span class="symptom-name">{{ s.name }}</span>
+                                <span class="symptom-desc">{{ s.description }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Category: Head, Eyes & Face -->
+                <div class="category-block">
+                    <h3 class="category-heading"><i class="fa-solid fa-eye"></i> Head, Eyes & ENT</h3>
+                    <div class="checkbox-grid">
+                        {% for s in catalog.head_eyes %}
+                        <label class="symptom-card">
+                            <input type="checkbox" name="symptoms" value="{{ s.id }}" class="symptom-checkbox" id="chk_{{ s.id }}">
+                            <div class="checkbox-content">
+                                <span class="symptom-name">{{ s.name }}</span>
+                                <span class="symptom-desc">{{ s.description }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Category: Digestive -->
+                <div class="category-block">
+                    <h3 class="category-heading"><i class="fa-solid fa-utensils"></i> Gastrointestinal Symptoms</h3>
+                    <div class="checkbox-grid">
+                        {% for s in catalog.digestive %}
+                        <label class="symptom-card">
+                            <input type="checkbox" name="symptoms" value="{{ s.id }}" class="symptom-checkbox" id="chk_{{ s.id }}">
+                            <div class="checkbox-content">
+                                <span class="symptom-name">{{ s.name }}</span>
+                                <span class="symptom-desc">{{ s.description }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Category: Emergency Symptoms (Priority Red-Flag) -->
+                <div class="category-block category-emergency">
+                    <div class="emergency-badge">
+                        <i class="fa-solid fa-triangle-exclamation"></i> High Priority Red Flags
+                    </div>
+                    <h3 class="category-heading text-danger"><i class="fa-solid fa-kit-medical"></i> Emergency & Critical Warning Symptoms</h3>
+                    <p class="category-sub text-danger-sub">Selecting any of these will trigger immediate emergency safety protocols.</p>
+                    <div class="checkbox-grid">
+                        {% for s in catalog.emergency %}
+                        <label class="symptom-card card-emergency">
+                            <input type="checkbox" name="symptoms" value="{{ s.id }}" class="symptom-checkbox" id="chk_{{ s.id }}">
+                            <div class="checkbox-content">
+                                <span class="symptom-name text-danger"><strong>{{ s.name }}</strong></span>
+                                <span class="symptom-desc">{{ s.description }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Submit Action Bar -->
+        <div class="form-action-bar">
+            <div class="selection-counter" id="selectionCounter">
+                <i class="fa-solid fa-clipboard-check"></i> <span id="selectedCountText">0</span> symptoms selected
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-secondary" onclick="clearAllSymptoms()">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+                <button type="submit" class="btn btn-primary" id="btnSubmit">
+                    <i class="fa-solid fa-brain"></i> Run Inference Engine
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

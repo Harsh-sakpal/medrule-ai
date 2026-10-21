@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedRule AI | Rule-Based Medical Diagnosis Expert System{% endblock %}</title>
+    <!-- Modern Typography: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for medical & UI iconography -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Academic Banner Header -->
+    <div class="academic-top-bar">
+        <div class="container top-bar-content">
+            <span><i class="fa-solid fa-graduation-cap"></i> <strong>SPPU TE Computer Engineering (NEP 2024)</strong> &bull; Mini-Project</span>
+            <span><strong>Student:</strong> Harsh Rajendra Sakpal (Roll: 45, Div: TE-A) &bull; <strong>Guide:</strong> Prof. Ajit Patil</span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="navbar-wrapper">
+        <nav class="container navbar">
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">MedRule<span class="brand-accent">.AI</span></span>
+                    <span class="brand-sub">Rule-Based Expert System</span>
+                </div>
+            </a>
+
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+                    <i class="fa-solid fa-stethoscope"></i> Symptom Checker
+                </a>
+                <a href="{{ url_for('history') }}" class="nav-link {% if request.endpoint == 'history' %}active{% endif %}">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Audit History
+                </a>
+                <a href="{{ url_for('test_runner') }}" class="nav-link {% if request.endpoint == 'test_runner' %}active{% endif %}">
+                    <i class="fa-solid fa-vial-circle-check"></i> Test Suite
+                </a>
+                <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">
+                    <i class="fa-solid fa-circle-nodes"></i> Architecture & Theory
+                </a>
+            </div>
+
+            <div class="nav-actions">
+                <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" class="badge-vercel">
+                    <i class="fa-solid fa-triangle"></i> Vercel Ready
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Global Safety Banner -->
+    <div class="safety-banner">
+        <div class="container safety-content">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span><strong>Academic Prototype Notice:</strong> MedRule AI demonstrates rule-based AI reasoning (Forward/Backward Chaining). It is not a clinical medical device and does not diagnose real patients.</span>
+        </div>
+    </div>
+
+    <!-- Main Content Block -->
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Academic Footer -->
+    <footer class="app-footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <i class="fa-solid fa-heart-pulse"></i> MedRule.AI
+                </div>
+                <p class="footer-desc">
+                    Educational prototype of an AI Rule-Based Expert System demonstrating Forward Chaining, Backward Chaining, and Explainable Knowledge Engineering.
+                </p>
+                <div class="college-info">
+                    <strong>Bharati Vidyapeeth's College of Engineering, Lavale, Pune</strong><br>
+                    Department of Computer Engineering &bull; Savitribai Phule Pune University
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Academic Details</h4>
+                <ul class="footer-list">
+                    <li><strong>Candidate:</strong> Harsh Rajendra Sakpal</li>
+                    <li><strong>Roll No / Div:</strong> Roll 45, Division TE-A COMP</li>
+                    <li><strong>Academic Year:</strong> 2026–27 (Semester V)</li>
+                    <li><strong>Subject:</strong> Artificial Intelligence (Mini-Project)</li>
+                    <li><strong>Project Guide:</strong> Prof. Ajit Patil</li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Inference Engines</h4>
+                <ul class="footer-list">
+                    <li><i class="fa-solid fa-arrow-right"></i> <strong>Forward Chaining:</strong> Data-driven rule firing</li>
+                    <li><i class="fa-solid fa-arrow-left"></i> <strong>Backward Chaining:</strong> Goal-driven fact verification</li>
+                    <li><i class="fa-solid fa-triangle-exclamation"></i> <strong>Emergency Filter:</strong> Priority red-flag detection</li>
+                    <li><i class="fa-solid fa-code"></i> <strong>Architecture:</strong> Python Flask + Serverless API</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container copyright-row">
+                <span>&copy; 2026–2027 Harsh Rajendra Sakpal &bull; Department of Computer Engineering</span>
+                <span>Crafted for SPPU Artificial Intelligence Laboratory</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Global Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
