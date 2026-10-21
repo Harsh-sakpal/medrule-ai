@@ -24,9 +24,23 @@ from inference_engine import (
     ValidationError
 )
 
-app = Flask(__name__)
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+app = Flask(
+    __name__,
+    static_folder=os.path.join(BASE_DIR, "static"),
+    static_url_path="/static",
+    template_folder=os.path.join(BASE_DIR, "templates")
+)
 # Secret key for secure session state management
 app.secret_key = os.environ.get("SECRET_KEY", "medrule-ai-sppu-2026-harsh-sakpal-secret-key")
+
+from flask import send_from_directory
+
+@app.route("/static/<path:filename>")
+def custom_static(filename):
+    """Ensure static files are always served reliably across local and serverless environments."""
+    return send_from_directory(app.static_folder, filename)
 
 # Academic Project Context
 PROJECT_METADATA = {
