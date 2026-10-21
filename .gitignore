@@ -16,3 +16,5 @@ ENV/
 .vscode/
 .idea/
 *.swp
+
+.vercel
